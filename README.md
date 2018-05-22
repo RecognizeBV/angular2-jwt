@@ -1,14 +1,14 @@
 # @auth0/angular-jwt
 
-### **NOTE:** This library is now at version 1.0 and is published on npm as `@auth0/angular-jwt`. If you're looking for the pre-v1.0 version of this library, it can be found in the `pre-v1.0` branch and on npm as `angular2-jwt`.
+### **NOTE:** This library is now at version 2 and is published on npm as `@auth0/angular-jwt`. If you're looking for the pre-v1.0 version of this library, it can be found in the `pre-v1.0` branch and on npm as `angular2-jwt`.
+
+**@auth0/angular-jwt v2 is to be used with Angular v6+ and RxJS v6+. For Angular v4.3 to v5+, use @auth0/angular-jwt v1**
 
 This library provides an `HttpInterceptor` which automatically attaches a [JSON Web Token](https://jwt.io) to `HttpClient` requests.
 
 This library does not have any functionality for (or opinion about) implementing user authentication and retrieving JWTs to begin with. Those details will vary depending on your setup, but in most cases, you will use a regular HTTP request to authenticate your users and then save their JWTs in local storage or in a cookie if successful.
 
 > **Note:** This library can only be used with Angular 4.3 and higher because it relies on an `HttpInterceptor` from Angular's `HttpClient`. This feature is not available on lower versions.
-
-> **Note:** Internet Explorer 11 support requires a [URL polyfill](https://github.com/github/url-polyfill)
 
 ## Installation
 
@@ -127,7 +127,11 @@ initial auth route(s) are on a whitelisted domain and take basic auth headers.
 JwtModule.forRoot({
   config: {
     // ...
-    blacklistedRoutes: ['localhost:3001/auth/', 'foo.com/bar/', /localhost:3001\/foo\/far.*/] // strings and regular expressions
+    blacklistedRoutes: [
+      'localhost:3001/auth/',
+      'foo.com/bar/',
+      /localhost:3001\/foo\/far.*/
+    ] // strings and regular expressions
   }
 });
 ```

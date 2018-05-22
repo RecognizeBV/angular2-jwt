@@ -7,9 +7,9 @@ import {
 } from '@angular/common/http';
 import { JwtHelperService } from './jwthelper.service';
 import { JWT_OPTIONS } from './jwtoptions.token';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/mergeMap';
+import { Observable } from "rxjs/internal/Observable";
+import { from } from "rxjs/internal/observable/from";
+import { mergeMap } from 'rxjs/operators';
 import { parse } from 'url';
 
 @Injectable()
@@ -86,11 +86,7 @@ export class JwtInterceptor implements HttpInterceptor {
 
     if (token && tokenIsExpired && this.skipWhenExpired) {
       request = request.clone();
-    } else if (
-      token &&
-      this.isWhitelistedDomain(request) &&
-      !this.isBlacklistedRoute(request)
-    ) {
+    } else if (token) {
       request = request.clone({
         setHeaders: {
           [this.headerName]: `${this.authScheme}${token}`
@@ -104,14 +100,20 @@ export class JwtInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    if(
+      this.isWhitelistedDomain(request) &&
+      !this.isBlacklistedRoute(request)
+    ) {
+      return next.handle(request);
+    }
     const token = this.tokenGetter();
 
     if (token instanceof Promise) {
-      return Observable.fromPromise(token).mergeMap(
+      return from(token).pipe(mergeMap(
         (asyncToken: string | null) => {
           return this.handleInterception(asyncToken, request, next);
         }
-      );
+      ));
     } else {
       return this.handleInterception(token, request, next);
     }
