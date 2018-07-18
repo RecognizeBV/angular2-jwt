@@ -101,7 +101,7 @@ export class JwtInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if(
-      !this.isWhitelistedDomain(request) &&
+      !this.isWhitelistedDomain(request) ||
       this.isBlacklistedRoute(request)
     ) {
       return next.handle(request);
